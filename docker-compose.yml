@@ -26,6 +26,7 @@ services:
       - ./sipi/config:/sipi/config:delegated
       - ./sipi/images:/sipi/images:delegated
       - ./sipi/server:/sipi/server:delegated
+      - ./sipi/scripts:/sipi/scripts:delegated
     networks:
       - knora-net
     environment:
