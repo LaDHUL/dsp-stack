@@ -22,7 +22,7 @@ services:
     ports:
       - "1024:1024"
     volumes:
-      - /tmp:/tmp
+      - tmp:/tmp
       - ${LOCAL_HOME}/sipi/config:/sipi/config:delegated
       - ${LOCAL_HOME}/sipi/images:/sipi/images:delegated
       - ${LOCAL_HOME}/sipi/server:/sipi/server:delegated
@@ -45,7 +45,7 @@ services:
     ports:
       - "3333:3333"
     volumes:
-      - /tmp:/tmp
+      - tmp:/tmp
     networks:
       - knora-net
     environment:
@@ -73,3 +73,4 @@ networks:
 volumes:
   db-home:
   db-import:
+  tmp:
