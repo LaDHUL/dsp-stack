@@ -1,10 +1,10 @@
 .PHONY: up
-up: ## performs a docker-compose up -d
-	docker-compose up -d
+up: ## performs a docker compose up -d
+	docker compose up -d
 
 .PHONY: db-start
-db-start: ## performs a docker-compose up -d db
-	docker-compose up -d db
+db-start: ## performs a docker compose up -d db
+	docker compose up -d db
 
 .PHONY: db-purge
 db-purge: down ## stops the db and performs a sudo rm -r db/data
@@ -27,20 +27,20 @@ db-restore: ## restore the file backup.trig to fuseki
 	@curl -X POST -H "Content-Type: application/trig" --data-binary "@backup//backup.trig" -u "admin:test" "http://0.0.0.0:3030/knora-test"
 
 .PHONY: down
-down: ## performs a docker-compose down
-	docker-compose down
+down: ## performs a docker compose down
+	docker compose down
 
 .PHONY: pull
-pull: ## performs a docker-compose pull
-	docker-compose pull
+pull: ## performs a docker compose pull
+	docker compose pull
 
 .PHONY: ps
 ps: ## list running services
-	docker-compose ps
+	docker compose ps
 
 .PHONY: logs
 logs: ## list running services
-	docker-compose logs -tf
+	docker compose logs -tf
 
 .PHONY: help
 help: ## this help
