@@ -65,6 +65,32 @@ services:
       - KNORA_WEBAPI_KNORA_API_EXTERNAL_HOST=0.0.0.0
       - KNORA_WEBAPI_KNORA_API_EXTERNAL_PORT=3333
 
+  tangoh:
+    image: daschswiss/dsp-tangoh-app:v1.3.2
+    ports:
+      - "3335:3335"
+    networks:
+      - knora-net
+    depends_on:
+      - api
+    environment:
+      - 'KNORA_SALSAH1_HOSTNAME=tangoh'
+      - 'KNORA_SALSAH1_PORT=3335'
+      - "KNORA_SALSAH1_WEBAPI=http://0.0.0.0:3333"
+      - "KNORA_SALSAH1_SIPI=http://0.0.0.0:1024"
+    restart: always
+
+  app:
+    image: daschswiss/dsp-app:latest
+    ports:
+      - "4200:4200"
+    networks:
+      - knora-net
+    environment:
+      - 'NGINX_PORT=4200'
+    restart: always
+
+
 networks:
   knora-net:
     name: knora-net
