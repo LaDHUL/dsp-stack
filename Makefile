@@ -24,7 +24,7 @@ db-backup: ## downloads the database and saves it in backup.trig
 .PHONY: db-restore
 db-restore: ## restore the file backup.trig to fuseki
 	@echo $@
-	@curl -X POST -H "Content-Type: application/trig" --data-binary "@backup//backup.trig" -u "admin:test" "http://0.0.0.0:3030/knora-test"
+	@curl -X POST -H "Content-Type: application/trig" --data-binary "@backup/backup.trig" -u "admin:test" "http://0.0.0.0:3030/knora-test"
 
 .PHONY: down
 down: ## performs a docker compose down
