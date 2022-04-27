@@ -1,0 +1,101 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: daschswiss/apache-jena-fuseki:2.0.8 # should be the same version as in Dependencies.scala
+    ports:
+      - "3030:3030"
+    volumes:
+      - db-home:/fuseki:delegated
+      - db-import:/staging:delegated
+    networks:
+      - knora-net
+    environment:
+      - TZ=Europe/Zurich
+      - ADMIN_PASSWORD=test
+      - JVM_ARGS=-Xmx3G
+
+  sipi:
+    image: daschswiss/knora-sipi:latest
+
+    ports:
+      - "1024:1024"
+    volumes:
+      - tmp:/tmp
+      - ./sipi/config:/sipi/config:delegated
+      - ./sipi/images:/sipi/images:delegated
+      - ./sipi/server:/sipi/server:delegated
+      - ./sipi/scripts:/sipi/scripts:delegated
+    networks:
+      - knora-net
+    environment:
+      - TZ=Europe/Zurich
+      - SIPI_EXTERNAL_PROTOCOL=http
+      - SIPI_EXTERNAL_HOSTNAME=0.0.0.0
+      - SIPI_EXTERNAL_PORT=1024
+      - SIPI_WEBAPI_HOSTNAME=api
+      - SIPI_WEBAPI_PORT=3333
+      - KNORA_WEBAPI_KNORA_API_EXTERNAL_HOST=0.0.0.0
+      - KNORA_WEBAPI_KNORA_API_EXTERNAL_PORT=3333
+    # entrypoint: [ "valgrind", "--leak-check=yes", "/sipi/sipi" ] ## uncomment to run SIPI under valgrind
+    command: --config=/sipi/config/sipi.docker-config.lua
+
+  api:
+    image: daschswiss/knora-api:latest
+    ports:
+      - "3333:3333"
+    volumes:
+      - tmp:/tmp
+    networks:
+      - knora-net
+    environment:
+      - TZ=Europe/Zurich
+      - KNORA_AKKA_LOGLEVEL=DEBUG
+      - KNORA_AKKA_STDOUT_LOGLEVEL=DEBUG
+      - KNORA_WEBAPI_DB_CONNECTIONS=2
+      - KNORA_WEBAPI_TRIPLESTORE_HOST=db
+      - KNORA_WEBAPI_TRIPLESTORE_DBTYPE=fuseki
+      - KNORA_WEBAPI_SIPI_INTERNAL_HOST=sipi
+      - KNORA_WEBAPI_TRIPLESTORE_FUSEKI_REPOSITORY_NAME=knora-test
+      - KNORA_WEBAPI_TRIPLESTORE_FUSEKI_USERNAME=admin
+      - KNORA_WEBAPI_TRIPLESTORE_FUSEKI_PASSWORD=test
+      - KNORA_WEBAPI_CACHE_SERVICE_ENABLED=false
+      - KNORA_WEBAPI_ALLOW_RELOAD_OVER_HTTP=true
+      - KNORA_WEBAPI_KNORA_API_EXTERNAL_HOST=0.0.0.0
+      - KNORA_WEBAPI_KNORA_API_EXTERNAL_PORT=3333
+
+  tangoh:
+    image: daschswiss/dsp-tangoh-app:v1.3.2
+    ports:
+      - "3335:3335"
+    networks:
+      - knora-net
+    depends_on:
+      - api
+    environment:
+      - 'KNORA_SALSAH1_HOSTNAME=tangoh'
+      - 'KNORA_SALSAH1_PORT=3335'
+      - "KNORA_SALSAH1_WEBAPI=http://0.0.0.0:3333"
+      - "KNORA_SALSAH1_SIPI=http://0.0.0.0:1024"
+    restart: always
+
+  app:
+    image: daschswiss/dsp-app:latest
+    ports:
+      - "4200:4200"
+    networks:
+      - knora-net
+    environment:
+      - 'NGINX_PORT=4200'
+    restart: always
+
+
+networks:
+  knora-net:
+    name: knora-net
+
+volumes:
+  db-home:
+  db-import:
+  tmp:
