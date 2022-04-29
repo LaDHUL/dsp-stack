@@ -1,3 +1,6 @@
+# matching release: 
+# "2022.04.02": {"api": "20.1.1", "app": "v1.3.2", "admin": "v9.7.0", "cpe": "v0.1.0", "db": "2.0.6"},
+
 .PHONY: up
 up: ## performs a docker compose up -d
 	docker compose up -d
