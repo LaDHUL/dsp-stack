@@ -15,8 +15,8 @@ db-purge: down ## stops the db and performs a sudo rm -r db/data
 
 .PHONY: db-init
 db-init: db-start ## starts the db and creates an empty repository
-	./scripts/wait-for-db.sh
-	make -C scripts fuseki-init-knora-test-minimal
+	./scripts/scripts/wait-for-db.sh
+	make -C scripts/scripts fuseki-init-knora-test-minimal
 
 .PHONY: db-backup
 db-backup: ## downloads the database and saves it in backup.trig
