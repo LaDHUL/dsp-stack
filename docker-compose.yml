@@ -42,7 +42,7 @@ services:
     command: --config=/sipi/config/sipi.docker-config.lua
 
   api:
-    image: daschswiss/knora-api:latest
+    image: daschswiss/knora-api:19.0.0
     ports:
       - "3333:3333"
     volumes:
